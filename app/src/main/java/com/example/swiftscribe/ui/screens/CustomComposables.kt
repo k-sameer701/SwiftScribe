@@ -29,6 +29,7 @@ fun CustomTextField(
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
         ),
+        singleLine = flag,
         maxLines = if (flag) 1  else Int.MAX_VALUE,
         placeholder = {Text(text = placeholder)},
         keyboardOptions = KeyboardOptions.Default.copy(

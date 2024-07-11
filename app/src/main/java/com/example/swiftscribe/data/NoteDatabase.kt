@@ -4,12 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import com.example.swiftscribe.domain.Note
-import com.example.swiftscribe.domain.utils.DateConverter
 
-@Database(entities = [Note::class], version = 1, exportSchema = false)
-@TypeConverters(DateConverter::class)
+@Database(entities = [Note::class], version = 3, exportSchema = false)
 abstract class NoteDatabase: RoomDatabase() {
     abstract fun getNoteDao(): NoteDao
 
@@ -25,7 +22,7 @@ abstract class NoteDatabase: RoomDatabase() {
                     context = context,
                     klass = NoteDatabase::class.java,
                     name = DB_NAME
-                ).build().also { Instance = it }
+                ).fallbackToDestructiveMigration().build().also { Instance = it }
             }
         }
     }

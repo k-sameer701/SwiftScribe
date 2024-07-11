@@ -13,13 +13,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class NoteViewModel(private val noteRepository: NoteRepository): ViewModel() {
-    fun getAllNotesOrderByTitle(): Flow<List<Note>> = noteRepository.getAllNotesOrderByTitleInRepository()
-    fun getAllNotesOrderByDate(): Flow<List<Note>> = noteRepository.getAllNotesOrderByDateInRepository()
-    fun getNoteById(id: Int): Flow<Note> = noteRepository.getNoteById(id)
+    fun getAllNotes(): Flow<List<Note>> = noteRepository.getAllNotesFromRepository()
 
     fun insertNote(title: String, description: String) = viewModelScope.launch {
         noteRepository.insertNoteInRepository(
-            Note( title = title, description = description)
+            Note(title = title, description = description)
         )
     }
 

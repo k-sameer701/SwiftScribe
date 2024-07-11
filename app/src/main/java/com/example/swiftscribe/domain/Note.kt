@@ -3,11 +3,10 @@ package com.example.swiftscribe.domain
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.Instant
-import java.util.Date
 
 @Entity(tableName = "Note_Table")
 data class Note(
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "note_id")
     val id: Int = 0,
@@ -17,7 +16,4 @@ data class Note(
 
     @ColumnInfo(name = "note_description")
     val description: String,
-
-    @ColumnInfo(name = "note_date")
-    val dateAdded: Date = Date.from(Instant.now())
 )
