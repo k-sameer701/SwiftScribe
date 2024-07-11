@@ -1,5 +1,6 @@
 package com.example.swiftscribe.ui.screens
 
+import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,11 +16,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -54,18 +56,11 @@ fun MainScreen(
 
     Scaffold(
         floatingActionButton = {
-            IconButton(
-                modifier = Modifier.size(70.dp),
-                onClick = {
-                    isDialog = true
-                }
-            ) {
-                Image(
-                    modifier = Modifier.size(100.dp),
-                    painter = painterResource(id = R.drawable.add_note),
-                    contentDescription = "Add Note"
-                )
-            }
+            Image(
+                modifier = Modifier.size(60.dp).clickable { isDialog = true },
+                painter = painterResource(id = R.drawable.add_note),
+                contentDescription = "Add Note"
+            )
         }
     ) { paddingValues ->
         Column(
@@ -122,10 +117,9 @@ fun MainScreen(
                                 ) {
                                     Image(
                                         modifier = Modifier.size(25.dp),
-                                        painter = painterResource(id = R.drawable.delete_note),
+                                        painter = painterResource(id = R.drawable.delete_notes),
                                         contentDescription = "Delete Note"
                                     )
-                                    //Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
                                 }
                             }
                         }
@@ -143,7 +137,9 @@ fun MainScreen(
             confirmButton = {
                 Column {
                     Row(
-                        modifier = Modifier.fillMaxWidth().height(32.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(32.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -151,7 +147,7 @@ fun MainScreen(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {
-                                    if(title.isNotBlank() && description.isNotBlank()) {
+                                    if (title.isNotBlank() && description.isNotBlank()) {
                                         viewModel.insertNote(
                                             title = title,
                                             description = description
@@ -166,7 +162,7 @@ fun MainScreen(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {
-                                    if(title.isNotBlank() && description.isNotBlank()) {
+                                    if (title.isNotBlank() && description.isNotBlank()) {
                                         viewModel.insertNote(
                                             title = title,
                                             description = description
