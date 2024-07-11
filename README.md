@@ -48,10 +48,10 @@
 ## Usage
 
 1. Launch the **SwiftScribe** app.
-2. Add a new note by clicking the 🪶 button.
+2. Add a new note by clicking the add button.
 3. Enter your note details and save.
 5. Edit a note by selecting it and making changes.
-6. Delete a note by long-pressing it and confirming the deletion.
+6. Delete a note by clicking the delete button.
 
 ## License
 
