@@ -55,6 +55,9 @@ fun MainScreen(
 
     val noteList by viewModel.getAllNotes().collectAsState(initial = emptyList())
 
+    var lastTitle by remember { mutableStateOf("") }
+    var lastDescription by remember { mutableStateOf("") }
+
     Scaffold(
         modifier = Modifier.background(themeColor),
         floatingActionButton = {
@@ -114,6 +117,8 @@ fun MainScreen(
                             .clickable {
                                 editNote = true
                                 noteId = noteItem.id
+                                lastTitle = noteItem.title
+                                lastDescription = noteItem.description
                             },
                         color = themeColor,
                         shape = RoundedCornerShape(10.dp),
@@ -184,6 +189,8 @@ fun MainScreen(
                                             title = title,
                                             description = description
                                         )
+                                        title = ""
+                                        description = ""
                                     }
                                     isDialog = false
                                 },
@@ -199,6 +206,8 @@ fun MainScreen(
                                             title = title,
                                             description = description
                                         )
+                                        title = ""
+                                        description = ""
                                     }
                                     isDialog = false
                                 },
@@ -235,8 +244,8 @@ fun MainScreen(
                                 .clickable {
                                     val updatedNote = Note(
                                         id = noteId,
-                                        title = title,
-                                        description = description
+                                        title = lastTitle,
+                                        description = lastDescription
                                     )
                                     viewModel.updateNote(updatedNote)
                                     editNote = false
@@ -250,8 +259,8 @@ fun MainScreen(
                                 .clickable {
                                     val updatedNote = Note(
                                         id = noteId,
-                                        title = title,
-                                        description = description
+                                        title = lastTitle,
+                                        description = lastDescription
                                     )
                                     viewModel.updateNote(updatedNote)
                                     editNote = false
@@ -261,10 +270,10 @@ fun MainScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    CustomTextField(editText = title, onValueChange = { title=it }, placeholder = "Title", flag = true)
+                    CustomTextField(editText = lastTitle, onValueChange = { lastTitle=it }, placeholder = "Title", flag = true)
 
                     Spacer(modifier = Modifier.height(4.dp))
-                    CustomTextField(editText = description, onValueChange = { description = it }, placeholder = "Description", flag = false)
+                    CustomTextField(editText = lastDescription, onValueChange = { lastDescription = it }, placeholder = "Description", flag = false)
                 }
             }
         )
