@@ -17,11 +17,14 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -54,9 +58,14 @@ fun MainScreen(
     var isThemeChange by remember { mutableStateOf(false) }
 
     val noteList by viewModel.getAllNotes().collectAsState(initial = emptyList())
-
+    
     var lastTitle by remember { mutableStateOf("") }
     var lastDescription by remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredNotes = noteList.filter {
+        it.title.contains(searchQuery, ignoreCase = true) || it.description.contains(searchQuery, ignoreCase = true)
+    }
 
     Scaffold(
         modifier = Modifier.background(themeColor),
@@ -107,9 +116,51 @@ fun MainScreen(
             }
             Spacer(modifier = Modifier
                 .height(8.dp)
-                .background(themeColor) )
+                .background(themeColor))
+
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(75.dp)
+                    .padding(8.dp),
+                color = themeColor,
+                shape = RoundedCornerShape(10.dp),
+                border = BorderStroke(1.dp, if(!isThemeChange) Color.White else Color.Black)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(35.dp)
+                            .padding(start = 10.dp)
+                            .background(themeColor),
+                        painter = painterResource(id = R.drawable.search),
+                        contentDescription = "Search Notes"
+                    )
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        colors = TextFieldDefaults.colors(
+                            focusedTextColor = if(!isThemeChange) Color.White else Color.Black,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
+                        ),
+                        singleLine = true,
+                        maxLines = 1,
+                        placeholder = {Text(text = "Search Note")},
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done
+                        )
+                    )
+                }
+            }
+
             LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(count = 2)) {
-                items(noteList) { noteItem ->
+                items(filteredNotes) { noteItem ->
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -156,6 +207,9 @@ fun MainScreen(
                                 }
                             }
                             Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(5.dp),
                                 text = noteItem.description,
                                 maxLines = 8,
                                 color = if(isThemeChange) Color.Black else Color.White
