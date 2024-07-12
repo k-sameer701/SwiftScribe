@@ -25,8 +25,10 @@
 - **User-Friendly Interface:** Clean and intuitive design for a seamless experience.
 
 ## Screenshots
+
 <div align="center">
-<img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Swift%20Scribe%20Readme.png" />
+    <img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Dark%20Theme.png" />
+    <img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Light%20Theme.png" />
 </div>
 
 ## Installation
