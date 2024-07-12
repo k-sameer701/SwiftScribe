@@ -25,9 +25,7 @@
 
 ## Screenshots
 <div align="center">
-
-<img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Dark%20Note.png" />
-<img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Light%20Note.png" />
+<img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Swift%20Scribe%20Readme.png" />
 </div>
 
 ## Installation
