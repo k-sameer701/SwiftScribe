@@ -1,7 +1,7 @@
 <div align="center">
     <img src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/app_icon_preview.png" width="145" height="145" style="display: block; margin: 0 auto"/>
     <h1>SwiftScribe</h1>
-    <h3>Swift Swcribe is a user-friendly Android app for managing notes. It allows you to easily create, update, and delete notes, helping you stay organized and productive. Perfect for keeping track of tasks and ideas, Swift Scribe makes note-taking efficient and straightforward.</h3>
+    <h3>Swift Swcribe is a user-friendly Android app for managing notes. It allows you to easily create, update, search and delete notes, helping you stay organized and productive. Perfect for keeping track of tasks and ideas, Swift Scribe makes note-taking efficient and straightforward.</h3>
 </div>
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/k-sameer701/SwiftScribe)
@@ -21,6 +21,7 @@
 - **Create Notes:** Easily create new notes with a simple interface.
 - **Update Notes:** Modify your existing notes anytime.
 - **Delete Notes:** Remove notes that are no longer needed.
+- **Search Functionality:** Quickly find the notes you need.
 - **User-Friendly Interface:** Clean and intuitive design for a seamless experience.
 
 ## Screenshots
@@ -48,8 +49,9 @@
 1. Launch the **SwiftScribe** app.
 2. Add a new note by clicking the add button.
 3. Enter your note details and save.
-5. Edit a note by selecting it and making changes.
-6. Delete a note by clicking the delete button.
+4. Edit a note by selecting it and making changes.
+5. Delete a note by clicking the delete button.
+6. Use the search functionality to quickly find specific notes.
 
 ## License
 
