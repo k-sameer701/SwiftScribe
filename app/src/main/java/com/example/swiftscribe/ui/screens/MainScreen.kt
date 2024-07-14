@@ -1,5 +1,8 @@
 package com.example.swiftscribe.ui.screens
 
+import android.content.Context
+import android.content.Intent
+import android.content.Intent.createChooser
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,7 +21,10 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -35,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -49,6 +56,7 @@ import com.example.swiftscribe.ui.NoteViewModel
 fun MainScreen(
     viewModel: NoteViewModel = viewModel(factory = NoteViewModel.Factory)
 ) {
+    val context = LocalContext.current
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var isDialog by remember { mutableStateOf(false) }
@@ -66,6 +74,7 @@ fun MainScreen(
     val filteredNotes = noteList.filter {
         it.title.contains(searchQuery, ignoreCase = true) || it.description.contains(searchQuery, ignoreCase = true)
     }
+
 
     Scaffold(
         modifier = Modifier.background(themeColor),
@@ -205,6 +214,21 @@ fun MainScreen(
                                         contentDescription = "Delete Note"
                                     )
                                 }
+                                IconButton(
+                                    modifier = Modifier.background(themeColor),
+                                    onClick = {
+                                        val shareText = "${noteItem.title}\n${noteItem.description}"
+                                        shareNote(context = context, text = shareText)
+                                    }
+                                ) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(25.dp)
+                                            .background(themeColor),
+                                        imageVector = Icons.Default.Share,
+                                        contentDescription = "Share"
+                                    )
+                                }
                             }
                             Text(
                                 modifier = Modifier
@@ -332,4 +356,13 @@ fun MainScreen(
             }
         )
     }
+
+}
+fun shareNote(context: Context, text: String) {
+    val intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, text)
+        type = "text/plain"
+    }
+    context.startActivity(createChooser(intent, "Share via"))
 }
