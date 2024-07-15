@@ -3,8 +3,9 @@ package com.example.swiftscribe.ui.screens
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.createChooser
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,11 +22,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,13 +39,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.swiftscribe.R
 import com.example.swiftscribe.domain.Note
@@ -62,8 +61,8 @@ fun MainScreen(
     var isDialog by remember { mutableStateOf(false) }
     var editNote by remember { mutableStateOf(false) }
     var noteId by remember { mutableIntStateOf(0) }
-    var themeColor by remember { mutableStateOf(Color.Black) }
-    var isThemeChange by remember { mutableStateOf(false) }
+
+    var expand by remember { mutableStateOf(false) }
 
     val noteList by viewModel.getAllNotes().collectAsState(initial = emptyList())
     
@@ -75,17 +74,17 @@ fun MainScreen(
         it.title.contains(searchQuery, ignoreCase = true) || it.description.contains(searchQuery, ignoreCase = true)
     }
 
-
     Scaffold(
-        modifier = Modifier.background(themeColor),
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
         floatingActionButton = {
-            Image(
+            Icon(
                 modifier = Modifier
-                    .size(60.dp)
-                    .background(themeColor)
+                    .background(MaterialTheme.colorScheme.background)
+                    .size(45.dp)
                     .clickable { isDialog = true },
-                painter = painterResource(id = R.drawable.add_note),
-                contentDescription = "Add Note"
+                painter = painterResource(id = R.drawable.edit_24px),
+                contentDescription = "Add Note",
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
     ) { paddingValues ->
@@ -93,65 +92,48 @@ fun MainScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(themeColor),
+                .background(MaterialTheme.colorScheme.background)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
-                    .background(themeColor),
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = "Swift Scribe",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 25.sp,
-                    color = if(!isThemeChange) Color.White else Color.Black
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
-                IconButton(
-                    onClick = {
-                        isThemeChange = !isThemeChange
-                    }
-                ) {
-                    themeColor = if (isThemeChange) {
-                        Image(painter = painterResource(id = R.drawable.night), contentDescription = "Dark")
-                        Color.White
-                    } else {
-                        Image(painter = painterResource(id = R.drawable.sun), contentDescription = "Light")
-                        Color.Black
-                    }
-                }
             }
-            Spacer(modifier = Modifier
-                .height(8.dp)
-                .background(themeColor))
-
+            Spacer(modifier = Modifier.height(8.dp).background(MaterialTheme.colorScheme.background))
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(75.dp)
                     .padding(8.dp),
-                color = themeColor,
                 shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(1.dp, if(!isThemeChange) Color.White else Color.Black)
+                shadowElevation = 8.dp
             ) {
                 Row(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
+                    Icon(
+                        painter = painterResource(id = R.drawable.search_24px),
                         modifier = Modifier
-                            .size(35.dp)
                             .padding(start = 10.dp)
-                            .background(themeColor),
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = "Search Notes"
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentDescription = "Search Notes",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     TextField(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         colors = TextFieldDefaults.colors(
-                            focusedTextColor = if(!isThemeChange) Color.White else Color.Black,
+                            focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             unfocusedContainerColor = Color.Transparent,
                             focusedContainerColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
@@ -167,7 +149,6 @@ fun MainScreen(
                     )
                 }
             }
-
             LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(count = 2)) {
                 items(filteredNotes) { noteItem ->
                     Surface(
@@ -180,64 +161,89 @@ fun MainScreen(
                                 lastTitle = noteItem.title
                                 lastDescription = noteItem.description
                             },
-                        color = themeColor,
                         shape = RoundedCornerShape(10.dp),
-                        border = BorderStroke(1.dp, if(!isThemeChange) Color.White else Color.Black)
+                        shadowElevation = 8.dp
                     ) {
-                        Column(modifier = Modifier
-                            .padding(4.dp)
-                            .background(themeColor)
+                        Column(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.secondaryContainer)
+                                .padding(4.dp)
+                                .animateContentSize(
+                                    animationSpec = spring(
+                                        dampingRatio = Spring.DampingRatioNoBouncy,
+                                        stiffness = Spring.StiffnessMedium
+                                    )
+                                )
                         ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(5.dp)
-                                    .background(themeColor),
+                                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                                    .padding(5.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     text = noteItem.title,
-                                    fontWeight = FontWeight.ExtraBold,
+                                    style = MaterialTheme.typography.headlineSmall,
                                     maxLines = 1,
-                                    color = if(isThemeChange) Color.Black else Color.White
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
-                                IconButton(
-                                    modifier = Modifier.background(themeColor),
-                                    onClick = { viewModel.deleteNote(noteItem) }
-                                ) {
-                                    Image(
-                                        modifier = Modifier
-                                            .size(25.dp)
-                                            .background(themeColor),
-                                        painter = painterResource(id = R.drawable.delete_notes),
-                                        contentDescription = "Delete Note"
-                                    )
-                                }
-                                IconButton(
-                                    modifier = Modifier.background(themeColor),
-                                    onClick = {
-                                        val shareText = "${noteItem.title}\n${noteItem.description}"
-                                        shareNote(context = context, text = shareText)
-                                    }
-                                ) {
-                                    Icon(
-                                        modifier = Modifier
-                                            .size(25.dp)
-                                            .background(themeColor),
-                                        imageVector = Icons.Default.Share,
-                                        contentDescription = "Share"
-                                    )
-                                }
+                                Icon(
+                                    modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
+                                        .clickable {
+                                            expand = !expand
+                                            noteId = noteItem.id
+                                        },
+                                    painter = if (expand && noteId == noteItem.id) painterResource(
+                                        id = R.drawable.expand_circle_up_24px
+                                    ) else painterResource(
+                                        id = R.drawable.expand_circle_down_24px
+                                    ),
+                                    contentDescription = "Expand",
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
                             }
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(5.dp),
                                 text = noteItem.description,
-                                maxLines = 8,
-                                color = if(isThemeChange) Color.Black else Color.White
+                                style = MaterialTheme.typography.labelMedium,
+                                maxLines = 4,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
+                            if(expand && noteId == noteItem.id) {
+                                Row(
+                                    modifier = Modifier
+                                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                                        .fillMaxWidth()
+                                        .padding(
+                                            start = dimensionResource(R.dimen.padding_medium),
+                                            top = dimensionResource(R.dimen.padding_small),
+                                            bottom = dimensionResource(R.dimen.padding_medium),
+                                            end = dimensionResource(R.dimen.padding_medium)
+                                        ),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer).clickable { viewModel.deleteNote(noteItem) },
+                                        painter = painterResource(id = R.drawable.cleaning_bucket_24px),
+                                        contentDescription = "Delete Note",
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                    Icon(
+                                        modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer).clickable {
+                                            val shareText = "${noteItem.title}\n${noteItem.description}"
+                                            shareNote(context = context, text = shareText)
+                                        },
+                                        painter = painterResource(id = R.drawable.share_24px),
+                                        contentDescription = "Share Note",
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -247,7 +253,10 @@ fun MainScreen(
 
     if(isDialog) {
         AlertDialog(
-            modifier = Modifier.height(500.dp),
+            modifier = Modifier
+                .height(500.dp)
+                .clip(RoundedCornerShape(28.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer),
             onDismissRequest = { isDialog = !isDialog },
             confirmButton = {
                 Column {
@@ -258,9 +267,8 @@ fun MainScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image(
-                            modifier = Modifier
-                                .size(30.dp)
+                        Icon(
+                            modifier = Modifier.size(30.dp)
                                 .clickable {
                                     if (title.isNotBlank() && description.isNotBlank()) {
                                         viewModel.insertNote(
@@ -272,31 +280,17 @@ fun MainScreen(
                                     }
                                     isDialog = false
                                 },
-                            painter = painterResource(id = R.drawable.save),
-                            contentDescription = "Save Note"
-                        )
-                        Image(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clickable {
-                                    if (title.isNotBlank() && description.isNotBlank()) {
-                                        viewModel.insertNote(
-                                            title = title,
-                                            description = description
-                                        )
-                                        title = ""
-                                        description = ""
-                                    }
-                                    isDialog = false
-                                },
-                            painter = painterResource(id = R.drawable.mark),
-                            contentDescription = "Save Note"
+                            painter = painterResource(id = R.drawable.keyboard_double_arrow_left_24px),
+                            contentDescription = "Save Note",
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier
+                        .height(8.dp))
                     CustomTextField(editText = title, onValueChange = { title=it }, placeholder = "Title", flag = true)
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier
+                        .height(4.dp))
                     CustomTextField(editText = description, onValueChange = { description = it }, placeholder = "Description", flag = false)
                 }
             }
@@ -305,7 +299,10 @@ fun MainScreen(
 
     if(editNote) {
         AlertDialog(
-            modifier = Modifier.height(500.dp),
+            modifier = Modifier
+                .height(500.dp)
+                .clip(RoundedCornerShape(28.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer),
             onDismissRequest = { editNote = !editNote },
             confirmButton = {
                 Column {
@@ -316,9 +313,8 @@ fun MainScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image(
-                            modifier = Modifier
-                                .size(30.dp)
+                        Icon(
+                            modifier = Modifier.size(30.dp)
                                 .clickable {
                                     val updatedNote = Note(
                                         id = noteId,
@@ -328,23 +324,9 @@ fun MainScreen(
                                     viewModel.updateNote(updatedNote)
                                     editNote = false
                                 },
-                            painter = painterResource(id = R.drawable.save),
-                            contentDescription = "Save Note"
-                        )
-                        Image(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clickable {
-                                    val updatedNote = Note(
-                                        id = noteId,
-                                        title = lastTitle,
-                                        description = lastDescription
-                                    )
-                                    viewModel.updateNote(updatedNote)
-                                    editNote = false
-                                },
-                            painter = painterResource(id = R.drawable.mark),
-                            contentDescription = "Save Note"
+                            painter = painterResource(id = R.drawable.keyboard_double_arrow_left_24px),
+                            contentDescription = "Save Note",
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -356,8 +338,8 @@ fun MainScreen(
             }
         )
     }
-
 }
+
 fun shareNote(context: Context, text: String) {
     val intent = Intent().apply {
         action = Intent.ACTION_SEND
