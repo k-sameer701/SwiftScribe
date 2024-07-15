@@ -1,7 +1,7 @@
 <div align="center">
     <img src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/app_icon_preview.png" width="145" height="145" style="display: block; margin: 0 auto"/>
     <h1>SwiftScribe</h1>
-    <h3>Swift Swcribe is a user-friendly Android app for managing notes. It allows you to easily create, update, search and delete notes, helping you stay organized and productive. Perfect for keeping track of tasks and ideas, Swift Scribe makes note-taking efficient and straightforward.</h3>
+    <h3>Swift Swcribe is a user-friendly Android app for managing notes. It allows you to easily create, update, search, delete and share the notes, helping you stay organized and productive. Perfect for keeping track of tasks and ideas, Swift Scribe makes note-taking efficient and straightforward.</h3>
 </div>
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/k-sameer701/SwiftScribe)
@@ -22,13 +22,14 @@
 - **Update Notes:** Modify your existing notes anytime.
 - **Delete Notes:** Remove notes that are no longer needed.
 - **Search Functionality:** Quickly find the notes you need.
+- **Share Notes:** Easily share the notes you want.
 - **User-Friendly Interface:** Clean and intuitive design for a seamless experience.
 
 ## Screenshots
 
 <div align="center">
-    <img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Dark%20Theme.png" />
-    <img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Light%20Theme.png" />
+    <img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Dark.png" />
+    <img height="600px" src="https://github.com/k-sameer701/SwiftScribe/blob/master/Screenshot/Light.png" />
 </div>
 
 ## Installation
@@ -54,6 +55,7 @@
 4. Edit a note by selecting it and making changes.
 5. Delete a note by clicking the delete button.
 6. Use the search functionality to quickly find specific notes.
+7. Share the note by clicking the share button.
 
 ## License
 
