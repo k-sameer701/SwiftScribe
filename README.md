@@ -72,5 +72,5 @@ This project is licensed under the [GPL-3 License](LICENSE).
 
 <br/>
 <div align="center">
-    <h4>SwiftScribe &copy Sameer Kumar 2024</h4>
+    <h4>SwiftScribe &copy Sameer Kumar 2025</h4>
 </div>
